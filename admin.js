@@ -25,10 +25,12 @@ function montarUI(){
   bar.innerHTML=`<b>🔐 <span id="adminWho">Modo administrador</span></b>
     <button class="btn btn-sol" id="btnAdd">＋ Añadir publicación</button>
     <button class="btn btn-ghost" id="btnClave">🔑 Mi acceso</button>
+    <button class="btn btn-ghost" id="btnTok">⚙️ Token</button>
     <button class="btn btn-ghost" id="btnExit">Salir</button>`;
   document.body.appendChild(bar);
   document.getElementById("btnAdd").onclick=()=>formPost(null);
   document.getElementById("btnClave").onclick=()=>cambiarAcceso();
+  document.getElementById("btnTok").onclick=()=>loginToken();
   document.getElementById("btnExit").onclick=salir;
   const veil=document.createElement("div");
   veil.id="modalVeil"; veil.className="modal-veil";
@@ -368,6 +370,7 @@ function formPost(p){
         const j=await cmsApi("savePost",{post});
         if(!j.ok)throw new Error(j.error||"guardar");
       }else{
+        if(!tok()){ loginToken(); msg.textContent="Primero guarda tu token de GitHub (botón ⚙️ Token) para poder publicar."; return; }
         let imgPath=p.imagen;
         if(nuevoFile) imgPath=await ghImagen(nuevoFile);
         const {sha,data}=await ghLeer("posts.json");
@@ -401,7 +404,7 @@ window.CZAdmin.bindTools=function(cont){
     }else if(db){
       if(!confirm("¿Eliminar esta publicación?"))return;
       if(usaCMS()){const j=await cmsApi("deletePost",{id:db.dataset.del});if(!j.ok){alert("Error");return;}}
-      else{const {sha,data}=await ghLeer("posts.json");
+      else{if(!tok()){loginToken();alert("Primero guarda tu token de GitHub (botón ⚙️ Token).");return;}const {sha,data}=await ghLeer("posts.json");
         const i=data.findIndex(x=>x.id===db.dataset.del);
         await ghGuardar("posts.json",data.filter((_,k)=>k!==i),sha,"Eliminar publicación");}
       location.reload();
