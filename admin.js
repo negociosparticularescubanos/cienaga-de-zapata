@@ -2,7 +2,7 @@
    Auth: Google (vía CMS) · Fallback: token de GitHub si el CMS no está configurado */
 (function(){
 "use strict";
-const OWNER = "roygarcialeonardo", REPO = "cienaga-de-zapata";
+const OWNER = "negociosparticularescubanos", REPO = "cienaga-de-zapata";
 const GH_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents`;
 const LS_TOK = "cz_admin_token";
 window.CZAdmin = {};
@@ -24,9 +24,11 @@ function montarUI(){
   bar.id="adminBar"; bar.className="admin-bar";
   bar.innerHTML=`<b>🔐 <span id="adminWho">Modo administrador</span></b>
     <button class="btn btn-sol" id="btnAdd">＋ Añadir publicación</button>
+    <button class="btn btn-ghost" id="btnClave">🔑 Mi acceso</button>
     <button class="btn btn-ghost" id="btnExit">Salir</button>`;
   document.body.appendChild(bar);
   document.getElementById("btnAdd").onclick=()=>formPost(null);
+  document.getElementById("btnClave").onclick=()=>cambiarAcceso();
   document.getElementById("btnExit").onclick=salir;
   const veil=document.createElement("div");
   veil.id="modalVeil"; veil.className="modal-veil";
@@ -39,8 +41,104 @@ function abrirModal(html){document.getElementById("modalBox").innerHTML=html;
 function cerrarModal(){document.getElementById("modalVeil").classList.remove("on");}
 
 function onFloat(){
-  if((usaCMS() && adminSession) || (!usaCMS() && tok())){ entrar(); return; }
-  if(usaCMS()) loginEmail(); else loginToken();
+  if(adminSession === "usuario-ok" || tok()){ entrar(); return; }
+  if(credAdmin()) loginUsuario(); else crearAcceso();
+}
+
+/* ----- Acceso del administrador: usuario y contraseña propios -----
+   La credencial vive SOLO en este navegador (huella SHA-256, nunca la
+   clave en claro). Se crea la primera vez y se cambia desde «Mi acceso». */
+const LS_CRED = "cz_admin_cred";
+function credAdmin(){ try{ return JSON.parse(localStorage.getItem(LS_CRED) || "null"); }catch(e){ return null; } }
+async function sha256hex(txt){
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+function sesionUsuario(nombre){
+  adminSession = "usuario-ok"; adminEmail = nombre;
+  localStorage.setItem("cz_admin_session", adminSession);
+  localStorage.setItem("cz_admin_email", adminEmail);
+}
+function crearAcceso(){
+  abrirModal(`<h3>🔐 Crea tu acceso de administrador</h3>
+    <p style="opacity:.85;font-size:.95rem;margin-bottom:.5rem">Primera vez en este equipo: elige tu usuario y contraseña de administrador. Se guardan solo en este navegador.</p>
+    <label>Usuario</label>
+    <input type="text" id="caUser" placeholder="Usuario" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="caPass" placeholder="Contraseña (mínimo 6)" autocomplete="new-password">
+    <label>Repite la contraseña</label>
+    <input type="password" id="caPass2" placeholder="Repite la contraseña" autocomplete="new-password">
+    <div class="row"><button class="btn btn-sol" id="caOk">Crear y entrar</button>
+    <button class="btn btn-ghost" id="caNo">Cancelar</button></div>
+    <p id="caMsg" style="margin-top:.8rem;font-size:.9rem"></p>`);
+  document.getElementById("caNo").onclick = cerrarModal;
+  document.getElementById("caOk").onclick = async ()=>{
+    const u = document.getElementById("caUser").value.trim();
+    const p = document.getElementById("caPass").value, p2 = document.getElementById("caPass2").value;
+    const msg = document.getElementById("caMsg");
+    if(u.length < 3){ msg.textContent = "✍️ El usuario debe tener al menos 3 caracteres."; return; }
+    if(p.length < 6){ msg.textContent = "✍️ La contraseña debe tener al menos 6 caracteres."; return; }
+    if(p !== p2){ msg.textContent = "❌ Las contraseñas no coinciden."; return; }
+    localStorage.setItem(LS_CRED, JSON.stringify({ u: u, h: await sha256hex(p) }));
+    sesionUsuario(u); cerrarModal(); entrar();
+  };
+}
+let czIntentos = 0;
+function loginUsuario(){
+  abrirModal(`<h3>🔐 Acceso administrador</h3>
+    <p style="opacity:.85;font-size:.95rem;margin-bottom:.5rem">Escribe tu usuario y contraseña de administrador.</p>
+    <label>Usuario</label>
+    <input type="text" id="luUser" placeholder="Usuario" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="luPass" placeholder="Contraseña" autocomplete="current-password">
+    <div class="row"><button class="btn btn-sol" id="luOk">Entrar</button>
+    <button class="btn btn-ghost" id="luNo">Cancelar</button></div>
+    <p id="luMsg" style="margin-top:.8rem;font-size:.9rem"></p>`);
+  document.getElementById("luNo").onclick = cerrarModal;
+  const pass = document.getElementById("luPass");
+  pass.addEventListener("keydown", e=>{ if(e.key === "Enter") document.getElementById("luOk").click(); });
+  document.getElementById("luOk").onclick = async ()=>{
+    const u = document.getElementById("luUser").value.trim();
+    const msg = document.getElementById("luMsg");
+    const cred = credAdmin(); if(!cred){ cerrarModal(); crearAcceso(); return; }
+    msg.textContent = "⏳ Verificando…";
+    const ok = (u.toLowerCase() === String(cred.u).toLowerCase()) && ((await sha256hex(pass.value)) === cred.h);
+    if(ok){ sesionUsuario(cred.u); cerrarModal(); entrar(); }
+    else{
+      czIntentos++;
+      msg.textContent = "❌ Usuario o contraseña incorrectos.";
+      if(czIntentos >= 3){ const b = document.getElementById("luOk"); b.disabled = true; msg.textContent = "❌ Demasiados intentos. Espera 15 segundos."; setTimeout(()=>{ b.disabled = false; czIntentos = 0; }, 15000); }
+    }
+  };
+}
+function cambiarAcceso(){
+  const cred = credAdmin(); if(!cred){ crearAcceso(); return; }
+  abrirModal(`<h3>🔑 Mi acceso de administrador</h3>
+    <p style="opacity:.85;font-size:.95rem;margin-bottom:.5rem">Cambia tu usuario y tu contraseña. Primero confirma la contraseña actual.</p>
+    <label>Contraseña actual</label>
+    <input type="password" id="maAct" placeholder="Contraseña actual" autocomplete="current-password">
+    <label>Usuario nuevo</label>
+    <input type="text" id="maUser" value="${esc(cred.u)}" autocomplete="username">
+    <label>Contraseña nueva (vacío = mantener la actual)</label>
+    <input type="password" id="maNew" placeholder="Contraseña nueva" autocomplete="new-password">
+    <div class="row"><button class="btn btn-sol" id="maOk">Guardar cambios</button>
+    <button class="btn btn-ghost" id="maNo">Cancelar</button></div>
+    <p id="maMsg" style="margin-top:.8rem;font-size:.9rem"></p>`);
+  document.getElementById("maNo").onclick = cerrarModal;
+  document.getElementById("maOk").onclick = async ()=>{
+    const act = document.getElementById("maAct").value;
+    const u = document.getElementById("maUser").value.trim();
+    const nv = document.getElementById("maNew").value;
+    const msg = document.getElementById("maMsg");
+    if((await sha256hex(act)) !== cred.h){ msg.textContent = "❌ La contraseña actual no es correcta."; return; }
+    if(u.length < 3){ msg.textContent = "✍️ El usuario debe tener al menos 3 caracteres."; return; }
+    if(nv && nv.length < 6){ msg.textContent = "✍️ La contraseña nueva debe tener al menos 6 caracteres."; return; }
+    const nueva = { u: u, h: nv ? await sha256hex(nv) : cred.h };
+    localStorage.setItem(LS_CRED, JSON.stringify(nueva));
+    sesionUsuario(u);
+    const w = document.getElementById("adminWho"); if(w) w.textContent = "Admin: " + u;
+    cerrarModal(); alert("✅ Acceso actualizado.");
+  };
 }
 
 /* ----- Login con código al correo ----- */
