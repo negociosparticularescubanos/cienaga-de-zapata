@@ -1,0 +1,48 @@
+/* ===== Playa viva (Ciénaga de Zapata) · video de fondo + olas del hero + botones mar ===== */
+/* Extraído del generador y adaptado al sitio. Respeta prefers-reduced-motion. */
+body.playa-fondo{background-color:#062e2b}
+#playaFondo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#062e2b}
+#playaFondo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#playaFondo .playa-velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,248,241,.55) 0%,rgba(250,248,241,.38) 40%,rgba(250,248,241,.52) 100%)}
+/* ---------- playa: olas en movimiento en el hero ---------- */
+body{position:relative}
+.playa-hero-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* ---------- el mar de la foto respira: destellos a la deriva ---------- */
+.hero .sea-shimmer{position:absolute;left:-10%;right:-10%;top:38%;bottom:0;pointer-events:none;
+  mix-blend-mode:screen;opacity:.5;background-size:180px 100%;animation:playaShimmer 7s linear infinite;
+  background-image:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 46px,rgba(255,255,255,.10) 46px 50px,rgba(255,255,255,0) 50px 60px);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 32%);mask-image:linear-gradient(180deg,transparent,#000 32%)}
+.hero .sea-shimmer.s2{top:55%;opacity:.35;background-size:260px 100%;animation:playaShimmer2 11s linear infinite reverse;
+  background-image:repeating-linear-gradient(96deg,rgba(255,255,255,0) 0 55px,rgba(255,255,255,.12) 55px 60px,rgba(255,255,255,0) 60px 65px)}
+@keyframes playaShimmer{from{background-position-x:0}to{background-position-x:180px}}
+@keyframes playaShimmer2{from{background-position-x:0}to{background-position-x:-260px}}
+.hero .wrap{position:relative;z-index:2}
+.hero .scroll-hint{position:relative;z-index:2}
+/* ---------- botones foto-real estilo playa (todos distintos, sin deformar) ---------- */
+.sea-btn{position:relative !important;overflow:hidden !important;border:2px solid #e0631f !important;color:#fff !important;
+  box-shadow:0 4px 18px rgba(224,99,31,.25), inset 0 0 0 2px rgba(255,255,255,.35) !important;
+  transition:transform .18s ease, box-shadow .18s ease !important}
+.sea-btn:hover{transform:scale(1.03);box-shadow:0 8px 26px rgba(0,130,180,.4), inset 0 0 0 2px rgba(255,255,255,.5) !important}
+.sea-btn:active{transform:scale(.98)}
+.sea-photo{position:absolute;left:0;top:-45%;width:100%;height:190%;object-fit:cover;object-position:center 55%;
+  filter:saturate(1.15) contrast(1.05);pointer-events:none;will-change:transform}
+.sea-foam{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sea-shine{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 35%,rgba(0,0,0,.14));pointer-events:none}
+.sea-label{position:relative;z-index:3;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  font-weight:800;color:#fff;text-shadow:0 2px 10px rgba(0,30,50,.85),0 1px 2px rgba(0,0,0,.9);pointer-events:none;white-space:nowrap}
+.sea-label svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.7))}
+.link-arrow.sea-btn{border-radius:100px;padding:11px 20px;font-size:13.5px;display:inline-flex}
+.link-arrow.sea-btn i{font-style:normal;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  background:rgba(255,255,255,.25);color:#fff;transition:.3s}
+#waBtn.sea-btn{overflow:hidden}
+.socials a.sea-btn{overflow:hidden;padding:0}
+#seaSplash{position:fixed;inset:0;width:100vw;height:100vh;z-index:250;pointer-events:none}
+/* adaptación a las píldoras del sitio */
+.btn.sea-btn,.ver.sea-btn,.home-hints button.sea-btn,.share-btn.sea-btn{border-radius:999px !important;border:2px solid rgba(255,255,255,.65) !important}
+.ver.sea-btn{padding:.55rem 1.2rem;display:inline-block}
+#seaSplash{z-index:200}
+@media (prefers-reduced-motion: reduce){
+  .hero .sea-shimmer{animation:none}
+  .sea-btn:hover{transform:none}
+}
