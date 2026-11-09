@@ -1,0 +1,148 @@
+Fotografías reales de Wikimedia Commons. Cada archivo conserva la licencia indicada por su autor.
+
+hero-humedal.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AZapata_swamp.JPG
+  Autor: NASA
+  Licencia: Public domain
+
+laguna-guama.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AMorning_at_Laguna_del_Tesoro%2C_Guam%C3%A0.jpg
+  Autor: Manfred Foeger
+  Licencia: CC BY-SA 4.0
+
+sendero-manglar.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACayo_Jut%C3%ADas-Mangrove_(4).jpg
+  Autor: Ji-Elle
+  Licencia: CC BY-SA 4.0
+
+tocororo.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APriotelus_temnurus_-Camaguey%2C_Camaguey_Province%2C_Cuba-8.jpg
+  Autor: Laura Gooch
+  Licencia: CC BY-SA 2.0
+
+buceo-arrecife.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACoral_off_the_coast_of_Cuba.jpg
+  Autor: calind
+  Licencia: CC BY-SA 3.0
+
+playa-giron.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APlayagiron.jpg
+  Autor: Bibit
+  Licencia: CC BY-SA 3.0
+
+amanecer-laguna.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ALaguna_del_Tesoro_(17146214168).jpg
+  Autor: Jean-Marc Astesana from Voisins le Bretonneux, France
+  Licencia: CC BY-SA 2.0
+
+flamencos-salinas.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APhoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg
+  Autor: Wilfredor
+  Licencia: CC0
+
+cueva-peces.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACueva_de_los_peces.JPG
+  Autor: Barocount
+  Licencia: CC BY-SA 4.0
+
+cocodrilo-cubano.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACrocodylus_Rhombifer.JPG
+  Autor: Yelles
+  Licencia: CC BY-SA 3.0
+
+manati.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AManatee_photo.jpg
+  Autor: NASA
+  Licencia: Public domain
+
+zunzuncito.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ABee_hummingbird_(Mellisuga_helenae)_adult_male_non-breeding.jpg
+  Autor: Charles J. Sharp
+  Licencia: CC BY-SA 4.0
+
+equipos/equipo-pinar-del-rio.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ATobacco_Field_-_Vi%C3%B1ales_-_Cuba_(5289757152).jpg
+  Autor: Adam Jones from Kelowna, BC, Canada
+  Licencia: CC BY-SA 2.0
+
+equipos/equipo-artemisa.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AArtemisa_mausoleo.jpg
+  Autor: diario granma. muestra edificio publico
+  Licencia: Public domain
+
+equipos/equipo-la-habana.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APanthera_leo_yawn_(Kgalagadi%2C_2012).jpg
+  Autor: Yathin S Krishnappa
+  Licencia: CC BY-SA 3.0
+
+equipos/equipo-mayabeque.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ADennis_2005-07-07_1550Z.jpg
+  Autor: NASA image courtesy Jeff Schmaltz, MODIS Land Rapid Response Team at NASA GSFC
+  Licencia: Public domain
+
+equipos/equipo-matanzas.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACriadero_de_Cocodrilos%2C_Cuba_(9419695793).jpg
+  Autor: Rinaldo Wurglitsch from Vienna, Austria
+  Licencia: CC BY 2.0
+
+equipos/equipo-cienfuegos.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AAfrican_Bush_Elephant.jpg
+  Autor: Muhammad Mahdi Karim Facebook
+
+
+
+
+
+The making of this document was supported by 
+  Licencia: GFDL 1.2
+
+equipos/equipo-villa-clara.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APanthera_pardus_close_up.jpg
+  Autor: tropicaLiving
+  Licencia: CC BY-SA 3.0
+
+equipos/equipo-sancti-spiritus.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ARooster_portrait2.jpg
+  Autor: Muhammad Mahdi Karim
+  Licencia: GFDL
+
+equipos/equipo-ciego-de-avila.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3APanthera_tigris_sumatran_subspecies.jpg
+  Autor: Monika Betley
+  Licencia: CC BY-SA 3.0
+
+equipos/equipo-camaguey.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ACharolais_cattle%2C_Sierra_Nevada%2C_Venezuela.jpg
+  Autor: Wilfredor
+  Licencia: CC0
+
+equipos/equipo-las-tunas.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AB%C3%BBcheron_per%C3%A7age_%C3%A0_c%C5%93ur.jpg
+  Autor: Moinats
+  Licencia: CC BY-SA 4.0
+
+equipos/equipo-granma.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AHorse-racing-4.jpg
+  Autor: Softeis
+  Licencia: CC BY-SA 3.0
+
+equipos/equipo-holguin.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AWhite_dog_sleeping_on_the_floor_with_puppies_after_nursing_in_Don_Det_Laos.jpg
+  Autor: Basile Morin
+  Licencia: CC BY-SA 4.0
+
+equipos/equipo-santiago-de-cuba.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AVespula_germanica_Richard_Bartz.jpg
+  Autor: Richard Bartz, Munich aka Makro Freak 
+  Licencia: CC BY-SA 2.5
+
+equipos/equipo-guantanamo.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3ABaracoa_Cuba_(261928859).jpeg
+  Autor: 
+Adrofotos
+  Licencia: CC0
+
+equipos/equipo-isla-de-la-juventud.webp
+  Fuente: https://commons.wikimedia.org/wiki/File%3AGaleon_Andalucia.jpg
+  Autor: Calapito
+  Licencia: CC BY 3.0
