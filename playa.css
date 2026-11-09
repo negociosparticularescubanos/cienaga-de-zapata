@@ -1,22 +1,14 @@
 /* ===== Playa viva (Ciénaga de Zapata) · video de fondo + olas del hero + botones mar ===== */
 /* Extraído del generador y adaptado al sitio. Respeta prefers-reduced-motion. */
-body.playa-fondo{background-color:#062e2b}
-#playaFondo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#062e2b}
-#playaFondo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body.playa-fondo{background-color:transparent}
+#playaFondo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:transparent}
+#playaFondo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform;transform:translateZ(0);backface-visibility:hidden}
 #playaFondo .playa-velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,248,241,.55) 0%,rgba(250,248,241,.38) 40%,rgba(250,248,241,.52) 100%)}
 /* ---------- playa: olas en movimiento en el hero ---------- */
 body{position:relative}
-.playa-hero-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-
 /* ---------- el mar de la foto respira: destellos a la deriva ---------- */
-.hero .sea-shimmer{position:absolute;left:-10%;right:-10%;top:38%;bottom:0;pointer-events:none;
-  mix-blend-mode:screen;opacity:.5;background-size:180px 100%;animation:playaShimmer 7s linear infinite;
-  background-image:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 46px,rgba(255,255,255,.10) 46px 50px,rgba(255,255,255,0) 50px 60px);
-  -webkit-mask-image:linear-gradient(180deg,transparent,#000 32%);mask-image:linear-gradient(180deg,transparent,#000 32%)}
-.hero .sea-shimmer.s2{top:55%;opacity:.35;background-size:260px 100%;animation:playaShimmer2 11s linear infinite reverse;
-  background-image:repeating-linear-gradient(96deg,rgba(255,255,255,0) 0 55px,rgba(255,255,255,.12) 55px 60px,rgba(255,255,255,0) 60px 65px)}
-@keyframes playaShimmer{from{background-position-x:0}to{background-position-x:180px}}
-@keyframes playaShimmer2{from{background-position-x:0}to{background-position-x:-260px}}
+to{background-position-x:180px}}
+to{background-position-x:-260px}}
 .hero .wrap{position:relative;z-index:2}
 .hero .scroll-hint{position:relative;z-index:2}
 /* ---------- botones foto-real estilo playa (todos distintos, sin deformar) ---------- */
@@ -43,6 +35,5 @@ body{position:relative}
 .ver.sea-btn{padding:.55rem 1.2rem;display:inline-block}
 #seaSplash{z-index:200}
 @media (prefers-reduced-motion: reduce){
-  .hero .sea-shimmer{animation:none}
   .sea-btn:hover{transform:none}
 }

@@ -761,14 +761,11 @@ function aplicarTema(t){
   });
 }
 function initTema(){
-  let t = "noche";
-  try{ t = localStorage.getItem("cz-theme") || "noche"; }catch(e){}
+  /* Sitio fijo en modo claro: solo video de fondo, cero fondos oscuros */
+  var t = "dia";
+  try{ localStorage.setItem("cz-theme", "dia"); }catch(e){}
   aplicarTema(t);
-  document.querySelectorAll("[data-theme-toggle]").forEach(b=>b.addEventListener("click", ()=>{
-    t = document.documentElement.getAttribute("data-theme") === "noche" ? "dia" : "noche";
-    aplicarTema(t);
-    try{ localStorage.setItem("cz-theme", t); }catch(e){}
-  }));
+  document.querySelectorAll("[data-theme-toggle]").forEach(function(b){ b.style.display = "none"; });
 }
 
 /* ---------- Extras inteligentes (upselling por reglas) ---------- */
@@ -975,17 +972,9 @@ function initReveal(){
 function initHero(){
   var hero = document.querySelector(".hero");
   if(!hero) return;
+  /* Sin imagen de banner ni slideshow: el fondo es solo el video (playa.mp4).
+     Se conserva la animación del titular por palabras. */
   if(!REDUCED){
-    var imgs = ["img/hero-humedal.webp","img/flamencos-salinas.webp","img/amanecer-laguna.webp"];
-    imgs.forEach(function(s){ var i = new Image(); i.src = s; });
-    var wrap = document.createElement("div");
-    wrap.className = "kb-slides";
-    wrap.setAttribute("aria-hidden","true");
-    wrap.innerHTML = imgs.map(function(s){
-      return '<div class="kb-slide" style="background-image:url(\''+s+'\')"></div>';
-    }).join("");
-    hero.insertBefore(wrap, hero.firstChild);
-    /* Titular con fade-up desfasado por palabras */
     var h1 = hero.querySelector("h1");
     if(h1){
       var frags = [];
@@ -1011,19 +1000,7 @@ function initHero(){
       h1.style.opacity = "1"; h1.style.transform = "none";
     }
   }
-  /* --- 4. Parallax suave del fondo del hero --- */
-  var slides = hero.querySelector(".kb-slides");
-  if(slides && !REDUCED){
-    var ticking = false;
-    window.addEventListener("scroll", function(){
-      if(ticking) return; ticking = true;
-      requestAnimationFrame(function(){
-        var y = window.scrollY;
-        if(y < hero.offsetHeight + 100) slides.style.transform = "translateY(" + (y * 0.22) + "px)";
-        ticking = false;
-      });
-    }, {passive:true});
-  }
+  /* Sin parallax de slides: el fondo es el video fijo (playa.mp4) */
 }
 
 /* --- 2. Navbar flotante: se compacta al hacer scroll --- */

@@ -46,10 +46,10 @@ nav{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(255,255,255,.95);
 .conn-dot.conn-green{background:#22c55e;box-shadow:0 0 8px #22c55e}
 @media(max-width:900px){.conn-badge{font-size:.65rem;margin-left:0}}
 
-/* ---------- HERO (home) ---------- */
+/* ---------- HERO (home) · solo video de fondo, sin imagen de banner ---------- */
 .hero{min-height:92svh;display:flex;align-items:center;padding:8.5rem 0 4rem;position:relative;
-  background:url('img/hero-humedal.webp') center/cover}
-.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,.78) 45%,rgba(250,248,241,.96) 100%)}
+  background:none;background-color:transparent}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.22) 45%,rgba(255,255,255,.45) 100%)}
 .hero-in{position:relative;z-index:2;width:100%}
 .kicker{display:inline-flex;align-items:center;gap:.5rem;background:var(--verde-claro);border:1px solid var(--verde);
   color:var(--verde-d);font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;padding:.45rem 1rem;border-radius:999px;margin-bottom:1.1rem}
@@ -873,3 +873,96 @@ html[data-theme="dia"] .mapa-etiqueta{background:#0e2a1c}
 .equipo-colores span{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.45);box-shadow:0 2px 6px rgba(0,0,0,.25)}
 @media(max-width:560px){.equipo-card{flex-direction:column;text-align:center;padding:1.5rem}
 .equipo-mascota{width:120px;height:120px}.equipo-datos{justify-content:center}.equipo-colores{justify-content:center}}
+
+/* ============================================================
+   MODO CLARO + SOLO VIDEO (petición del usuario)
+   - Sin imagen de banner: solo el video de fondo (playa.mp4).
+   - Cero fondos oscuros: todo claro y 100% legible.
+   - Fondos máximos: blancos muy translúcidos + blur.
+   ============================================================ */
+/* 1. El modo noche se comporta como el día (por si quedó guardado) */
+html[data-theme="noche"]{
+  --tl-bg:#fdf9ef; --tl-bg2:#f6efdd; --tl-card:rgba(255,255,255,.72);
+  --tl-tinta:#16281f; --tl-muted:#3e5047; --tl-borde:#e7dcc2;
+  --tl-verde:#0e9a66; --tl-verde-d:#0a6b46; --tl-verdeclaro:#e4f4ea;
+  --tl-input:#ffffff;
+  --bg:var(--tl-bg); --crema:rgba(246,239,221,.55); --tinta:var(--tl-tinta); --muted:var(--tl-muted);
+  --borde:var(--tl-borde); --verde:var(--tl-verde); --verde-d:var(--tl-verde-d);
+  --verde-claro:var(--tl-verdeclaro);
+  --sombra:0 18px 44px rgba(80,60,20,.12); --sombra-lg:0 22px 50px rgba(80,60,20,.16);
+  color-scheme:light;
+}
+/* 2. Nunca mostrar el slideshow de imágenes del hero */
+.kb-slides,.kb-slide{display:none!important;content:none!important}
+/* 3. Hero y páginas: transparentes para que se vea el video */
+.hero,.page-hero{background:none!important;background-color:transparent!important}
+.page-hero{position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.48) 0%,rgba(255,255,255,.25) 55%,rgba(255,255,255,.48) 100%)!important}
+html[data-theme="noche"] .page-hero{background:none!important}
+html[data-theme="noche"] .page-hero::before{background:linear-gradient(180deg,rgba(255,255,255,.48) 0%,rgba(255,255,255,.25) 55%,rgba(255,255,255,.48) 100%)!important}
+html[data-theme="noche"] .page-hero::after{display:none!important}
+html[data-theme="dia"] .page-hero{background:none!important}
+/* Panel claro detrás del texto del hero para lectura 100% */
+.hero-in{background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(18,41,31,.10);border-radius:24px;padding:2rem 2.2rem;box-shadow:0 18px 44px rgba(80,60,20,.12)}
+@media(max-width:640px){.hero-in{padding:1.4rem 1.2rem;border-radius:20px}}
+/* 4. Secciones transparentes: el video respira detrás */
+body{background:transparent!important}
+.categorias,.stats,.faq,.experiencias,.cta-final,.home-cuba{background:transparent!important}
+.stats{border-top:1px solid var(--borde);border-bottom:1px solid var(--borde);background:rgba(255,255,255,.45)!important}
+.faq{background:rgba(250,248,241,.50)!important}
+.cta-final{background:linear-gradient(120deg,rgba(228,244,234,.65),rgba(255,255,255,.65))!important}
+.experiencias{background:rgba(255,255,255,.55)!important;border-top:1px solid var(--borde)}
+.home-cuba{background:transparent!important}
+/* Tarjetas: blanco muy translúcido + blur, texto oscuro sólido */
+.cat-card,.card,.srv-card,.cont-card,.prov-card,.lugar-card,.equipo-card,.dt-dest-card,.dt-amen-item,.dt-dorm-card{
+  background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.stat{background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.toc,.dt-basicos,.dt-datos,.sd-datos,.cd-datos,.voucher-datos{background:rgba(255,255,255,.72)!important;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.cuba-mapa{background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.mr-extras{background:rgba(230,184,77,.10)!important}
+.cta-anuncia{background:rgba(255,255,255,.60)!important}
+/* Navegación clara */
+nav{background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+html[data-theme="noche"] nav{background:rgba(255,255,255,.78)!important}
+/* 5. Cero superficies oscuras: footer, modales, pills, lightbox */
+footer{background:rgba(255,255,255,.82)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-top:1px solid var(--borde);color:var(--tinta)}
+footer .logo{color:var(--tinta)!important}
+footer b{color:var(--tinta)!important}
+footer a{color:var(--verde-d)!important}
+footer .nota{color:var(--muted)!important;opacity:1!important}
+.foot-bottom{border-top:1px solid var(--borde)!important;color:var(--muted)!important}
+.srv-detalle,.cont-detalle,.modal-reserva,.modal-veil{background:rgba(255,255,255,.55)!important;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.lbx{background:rgba(255,255,255,.88)!important}
+.lbx-fig figcaption{color:#33463c!important}
+.lbx-x,.lbx-prev,.lbx-next{background:rgba(255,255,255,.85)!important;color:#16281f!important;border:1px solid var(--borde)!important}
+.sd-caja,.cd-caja,.mr-caja,.modal{background:#fff!important;color:var(--tinta)}
+html[data-theme="noche"] .sd-caja,html[data-theme="noche"] .cd-caja,html[data-theme="noche"] .mr-caja,
+html[data-theme="noche"] .modal,html[data-theme="noche"] .dt-reserva{background:#fff!important}
+.cont-seccion{background:rgba(255,255,255,.85)!important;color:#0a6b46!important}
+.tool-btn{background:rgba(255,255,255,.92)!important;color:#0a6b46!important;border:1px solid var(--verde)!important}
+.toast-reserva{background:#fff!important;color:#16281f!important;border:1px solid var(--verde)!important}
+.mapa-etiqueta{background:#fff!important;color:#16281f!important;border:1px solid var(--borde)}
+.cz-fab{background:linear-gradient(135deg,#0e9a66,#0b7a51)!important;border:1px solid #fff!important}
+.cz-panel{background:rgba(255,255,255,.92)!important}
+.srv-badge{background:linear-gradient(135deg,#0e9a66,#0b7a51)!important;color:#fff!important}
+/* Botón de tema oculto: el sitio queda fijo en modo claro */
+.theme-toggle{display:none!important}
+/* 6. Textos 100% visibles y legibles */
+body,.hero h1,.page-hero h1,.sec-title,.dt-titulo,.cta-final .big{color:#16281f!important;text-shadow:none}
+.hero h1 .grad,.sec-title .grad,.page-hero h1 .grad,.cta-final .big .grad{color:#0a6b46!important}
+.hero p.lead,.sec-sub,.page-hero .intro,.srv-extracto,.cont-extracto,.card p,.cat-card p,.dt-desc p,
+.faq-a p,.lugar-desc,.prov-card-d,.dt-dest-card p,.dt-dorm-card p,.dt-amen-item{color:#33463c!important;opacity:1!important}
+.srv-zona,.cont-ver,.ver-mas,.ver,.srv-anfit{opacity:1!important}
+.srv-anfit,.stat span,.cuba-mapa-hint,.lugar-ub,.equipo-datos,.equipo-dato,.pub-sub,.pub-opc{color:#3e5047!important;opacity:1!important}
+.crumbs,.dt-migas{color:#3e5047!important;opacity:1!important}
+.scroll-hint{color:#0a6b46!important;opacity:1!important}
+.home-count{color:#0a6b46!important}
+.faq-q,.srv-body h3,.cont-body h3,.card h3,.cat-card h3{color:#16281f!important}
+a{color:#0a6b46}
+/* Asegura que el reveal termine 100% opaco y legible */
+.rv.vis{opacity:1!important;transform:none!important}

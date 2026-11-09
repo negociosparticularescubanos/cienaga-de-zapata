@@ -2,7 +2,7 @@
    - Cache-first: CSS, JS, imágenes, manifest (rápido y offline).
    - Network-first: HTML y posts.json (el contenido se actualiza siempre que haya conexión).
    Cambia VERSION para forzar la actualización en los teléfonos ya instalados. */
-const VERSION = 'cz-v5';
+const VERSION = 'cz-v9';
 const CACHE = 'cienaga-' + VERSION;
 
 const CORE = [
@@ -22,7 +22,8 @@ const CORE = [
   'img/hero-humedal.webp',
   'playa.css',
   'playa.js',
-  'playa.mp4'
+  'playa-scrub.mp4',
+  'playa-scrub.webm'
 ];
 
 self.addEventListener('install', (e) => {

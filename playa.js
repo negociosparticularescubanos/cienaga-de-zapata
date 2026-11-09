@@ -6,9 +6,7 @@
   const video = document.createElement('video'); video.id = 'playaVideo'; video.muted = true; video.playsInline = true; video.preload = 'auto'; video.setAttribute('aria-hidden', 'true');
   fondo.appendChild(video); fondo.appendChild(velo); document.body.prepend(fondo);
   document.body.classList.add('playa-fondo');
-  document.querySelectorAll('header.hero').forEach((h)=>{
-    h.insertAdjacentHTML('afterbegin', '<div class="sea-shimmer s1"></div><div class="sea-shimmer s2"></div><canvas class="playa-hero-fx"></canvas>');
-  });
+
 })();
 // ---------- botones foto-real estilo playa (marea + espuma + salpicadura) ----------
 const seaBtns = [];
@@ -379,105 +377,89 @@ function seaLoop(now){
   } else if(seaSplashCtx){ seaSplashCtx.clearRect(0,0,innerWidth,innerHeight); }
   requestAnimationFrame(seaLoop);
 }
-// ---------- playa: olas en movimiento en cada hero ----------
-document.querySelectorAll('header.hero').forEach((hero)=>{
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fx = hero.querySelector('.playa-hero-fx');
-  const hctx = fx ? fx.getContext('2d') : null;
-  let HW = 0, HH = 0, heroOn = true;
-  function heroSize(){
-    if(!fx || !hctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    HW = hero.clientWidth; HH = hero.clientHeight;
-    if(HW < 2 || HH < 2) return;
-    fx.width = Math.round(HW * dpr); fx.height = Math.round(HH * dpr);
-    hctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function waveLayer(c, t, baseY, amp, sp, col, foam){
-    c.beginPath();
-    for(let x = 0; x <= HW; x += 6){
-      const y = baseY + Math.sin(x * 0.02 + t * sp) * amp + Math.sin(x * 0.045 - t * sp * 1.6) * amp * 0.5;
-      x === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
-    }
-    c.lineTo(HW, HH + 4); c.lineTo(0, HH + 4); c.closePath();
-    c.fillStyle = col; c.fill();
-    if(foam){
-      c.strokeStyle = 'rgba(255,255,255,.8)'; c.lineWidth = 2.5; c.beginPath();
-      for(let x = 0; x <= HW; x += 6){
-        const y = baseY + Math.sin(x * 0.02 + t * sp) * amp + Math.sin(x * 0.045 - t * sp * 1.6) * amp * 0.5;
-        x === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
-      }
-      c.stroke();
-    }
-  }
-  function heroDraw(t){
-    if(!hctx || !HW) return;
-    hctx.clearRect(0, 0, HW, HH);
-    waveLayer(hctx, t, HH * 0.80, 9, 1.4, 'rgba(20,140,160,.45)', false);
-    waveLayer(hctx, t + 2, HH * 0.87, 11, 1.1, 'rgba(94,234,212,.4)', false);
-    waveLayer(hctx, t + 4, HH * 0.93, 8, 1.7, 'rgba(255,255,255,.5)', true);
-  }
-  function tick(t){
-    if(heroOn && !reduce) heroDraw(t / 1000);
-    requestAnimationFrame(tick);
-  }
-  if('IntersectionObserver' in window) new IntersectionObserver(es => { heroOn = es[0].isIntersecting; }, {threshold: 0}).observe(hero);
-  addEventListener('resize', () => { heroSize(); if(reduce) heroDraw(8); });
-  addEventListener('load', () => { heroSize(); if(reduce) heroDraw(8); });
-  heroSize();
-  if(!reduce) requestAnimationFrame(tick); else heroDraw(8);
-});
 // video de fondo atado al scroll: bajar = avanzar, subir = retroceder (sin bucle)
+// Motor sin saltos: objetivo alineado a frame + un seek a la vez con pausas.
+// (Cada seek hacia atrás decodifica desde el keyframe anterior: amontonar seeks
+//  es lo que producía los tirones. Hacia adelante se reproduce nativo y al
+//  llegar se pausa, sin "snap" correctivo.)
 (function(){
   const bv = document.getElementById('playaVideo');
   if(!bv) return;
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ bv.pause(); return; } // quieto en el primer fotograma
-  bv.pause();
-  let dur = 0, target = 0;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ try{ bv.pause(); }catch(e){} return; }
+  try{ bv.pause(); }catch(e){}
+  bv.preload = 'auto';
+  let dur = 0, target = 0, targetDirty = true, ready = false, lastSeek = 0;
+  const FRAME = 1/24;
   function progress(){
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const p = max > 0 ? window.scrollY / max : 0;
+    return p < 0 ? 0 : (p > 1 ? 1 : p);
   }
   function updateTarget(){
-    if(!dur || !isFinite(dur)) return;
-    target = progress() * Math.max(0, dur - 0.05);
+    if(!dur || !isFinite(dur) || dur <= 0) return;
+    const snapped = Math.round((progress() * Math.max(0, dur - FRAME * 2)) / FRAME) * FRAME;
+    if(snapped !== target){ target = snapped; targetDirty = true; }
   }
-  // persecución suave: hacia adelante se REPRODUCE (movimiento nativo fluido,
-  // con velocidad según la distancia); hacia atrás se rebobina con micro-pasos
-  // rápidos desde memoria; al llegar, micro-pausa exacta
+  function markReady(){
+    if(!ready && bv.readyState >= 1 && bv.duration && isFinite(bv.duration)){ dur = bv.duration; ready = true; }
+    if(ready) updateTarget();
+  }
+  bv.addEventListener('loadedmetadata', markReady);
+  bv.addEventListener('canplay', markReady);
+  if(bv.readyState >= 1 && bv.duration){ dur = bv.duration; ready = true; updateTarget(); }
+  // precarga en memoria (blob URL: seeks rápidos en file:// y cualquier servidor).
+  // Se pide primero el formato que este navegador decodifica (webm/Chrome, mp4/Safari).
+  (function preload(){
+    let files = ['playa-scrub.webm', 'playa-scrub.mp4'];
+    try{
+      const c = bv.canPlayType ? (bv.canPlayType('video/webm; codecs="vp8"') || bv.canPlayType('video/webm') || '') : '';
+      if(!c) files = ['playa-scrub.mp4', 'playa-scrub.webm'];
+    }catch(e){}
+    (function next(i){
+      if(i >= files.length) return;
+      fetch(files[i]).then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(bd=>{
+        bv.src = URL.createObjectURL(bd);
+        try{ bv.load(); }catch(e){}
+      }).catch(()=>next(i+1));
+    })(0);
+  })();
+  addEventListener('scroll', ()=>{ if(ready) updateTarget(); }, {passive:true});
+  addEventListener('resize', updateTarget);
   (function smooth(){
-    if(dur && isFinite(dur)){
-      const diff = target - bv.currentTime;
-      const ad = Math.abs(diff);
-      if(ad < 0.08){
-        if(!bv.paused){ try{ bv.pause(); }catch(e){} }
-        if(ad > 0.02){
-          try{ bv.currentTime = target; }catch(e){}
-        }
-      }else if(diff > 0){
+    requestAnimationFrame(smooth);
+    if(!ready || document.hidden) return;
+    if(targetDirty){ updateTarget(); targetDirty = false; }
+    if(bv.readyState < 2 || bv.seeking) return; // un seek a la vez: el decoder respira
+    const diff = target - bv.currentTime;
+    const ad = Math.abs(diff);
+    if(ad < FRAME * 0.6){
+      if(!bv.paused){ try{ bv.pause(); }catch(e){} }
+      if(bv.playbackRate !== 1){ try{ bv.playbackRate = 1; }catch(e){} }
+      return; // ya llegó: no tocar (cada seek de más es un posible salto)
+    }
+    const now = performance.now();
+    if(diff > 0){
+      if(ad > 0.4){
+        // lejos: reproducción nativa con velocidad según distancia (siempre fluida)
         try{
-          const rate = Math.min(6, Math.max(0.6, 0.6 + diff * 0.8));
-          if(Math.abs(bv.playbackRate - rate) > 0.1) bv.playbackRate = rate;
+          const rate = Math.min(3, Math.max(0.6, 0.6 + ad * 0.8));
+          if(Math.abs(bv.playbackRate - rate) > 0.15) bv.playbackRate = rate;
           if(bv.paused){ const p = bv.play(); if(p && p.catch) p.catch(()=>{}); }
         }catch(e){}
-      }else{
-        if(!bv.paused){ try{ bv.pause(); }catch(e){} }
-        try{ bv.currentTime = bv.currentTime + Math.max(diff * 0.3, -0.18); }catch(e){}
+      }else if(now - lastSeek > 110){
+        // cerca: un solo salto exacto y pausa (sin rebasar ni corregir después)
+        try{ bv.pause(); }catch(e){}
+        try{ bv.playbackRate = 1; }catch(e){}
+        try{ bv.currentTime = target; lastSeek = now; }catch(e){}
       }
+    }else if(now - lastSeek > 110){
+      // hacia atrás: pasos cortos y espaciados (cada seek decodifica desde el
+      // keyframe anterior; amontonarlos es lo que producía los saltos)
+      try{ if(!bv.paused) bv.pause(); }catch(e){}
+      try{ bv.playbackRate = 1; }catch(e){}
+      try{ bv.currentTime = bv.currentTime + Math.max(diff * 0.4, -0.22); lastSeek = now; }catch(e){}
     }
-    requestAnimationFrame(smooth);
   })();
-  bv.addEventListener('loadedmetadata', ()=>{ dur = bv.duration || 0; updateTarget(); });
-  if(bv.readyState >= 1 && bv.duration){ dur = bv.duration; updateTarget(); }
-  // precarga en memoria (blob URL: seeks instantáneos en file:// y cualquier servidor)
-  fetch('playa.mp4').then(r=>{ if(!r.ok) throw 0; return r.blob(); }).then(b=>{
-    bv.src = URL.createObjectURL(b);
-  }).catch(()=>{
-    const s = document.createElement('source'); s.src = 'playa.mp4'; s.type = 'video/mp4';
-    bv.appendChild(s); bv.load();
-  });
-  addEventListener('scroll', updateTarget, {passive:true});
-  addEventListener('resize', updateTarget);
   updateTarget();
 })();
 // ---------- asignación de botones en el sitio ----------
